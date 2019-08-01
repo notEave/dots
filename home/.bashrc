@@ -9,9 +9,12 @@
 [ -f '.bash_aliases' ] && source '.bash_aliases'
 
 # Set bash prompt
-export PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\] \[\033[01;32m\]\u\[\033[00m\] $ '
+GREEN='\[\033[01;32m\]'
+CLEAR='\[\033[00m\]'
+BLUE='\[\033[01;34m\]'
+export PS1="$GREEN"'\h'"$CLEAR"':'"$BLUE"'\W'"$CLEAR"' '"$GREEN"'\u'"$CLEAR"' $ '
 
 # Write OSX-style last login line
-LAST_LOG=$(last $USER -F --limit 2 hoki | sed '2q;d')
-echo "Last login: $(echo $LAST_LOG | awk '{print $4" "$5" "$6" "$7}') on \
-$(echo $LAST_LOG | awk '{print $2}')"
+LOGIN=$(last -F --limit 2 "$USER" | sed '2q;d')
+echo "Last login: $(echo "$LOGIN" | awk '{print $4" "$5" "$6" "$7}') on \
+$(echo "$LOGIN" | awk '{print $2}')"
