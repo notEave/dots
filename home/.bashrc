@@ -8,6 +8,10 @@
 # Source bash_aliases if they exist
 [ -f '.bash_aliases' ] && source '.bash_aliases'
 
+# Set shell options
+shopt -s dotglob
+shopt -s autocd
+
 # Set bash prompt
 GREEN='\[\033[01;32m\]'
 CLEAR='\[\033[00m\]'
