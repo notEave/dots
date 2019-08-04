@@ -6,7 +6,7 @@
 [[ $- != *i* ]] && return
 
 # Source bash_aliases if they exist
-[ -f '.bash_aliases' ] && source '.bash_aliases'
+[ -f "$HOME/.bash_aliases" ] && source "$HOME/.bash_aliases"
 
 # Set shell options
 shopt -s dotglob
@@ -17,6 +17,10 @@ GREEN='\[\033[01;32m\]'
 CLEAR='\[\033[00m\]'
 BLUE='\[\033[01;34m\]'
 export PS1="$GREEN"'\h'"$CLEAR"':'"$BLUE"'\W'"$CLEAR"' '"$GREEN"'\u'"$CLEAR"' $ '
+export PATH="$PATH:$HOME/Desktop/bin"
+
+export VISUAL='emacsclient --tty'
+export EDITOR='emacsclient --tty'
 
 # Write OSX-style last login line
 LOGIN=$(last -F --limit 2 "$USER" | sed '2q;d')
