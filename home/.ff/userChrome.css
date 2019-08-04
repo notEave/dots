@@ -1,0 +1,18 @@
+@import "UserChrome-Tweaks/tabs/tabs-on-bottom-titlebar.css";
+@import "firefox-csshacks/chrome/hide_tabs_with_one_tab.css";
+
+@import "patch/tabs-on-bottom-titlebar.css";
+@import "patch/hide_tabs_with_one_tab.css";
+
+@import "self/monochrome-favicons.css";
+@import "self/thin-tabs.css";
+@import "self/thin-navbar.css";
+@import "self/centered-tab-title.css";
+@import "self/safari-style-tabs.css";
+@import "self/transparent-tabbar.css";
+@import "self/hide-unnecessary-borders.css";
+@import "self/centered-urlbar-text.css";
+@import "self/use-preferences-font.css";
+@import "self/plasma-theme.css";
+
+@namespace url('http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul');

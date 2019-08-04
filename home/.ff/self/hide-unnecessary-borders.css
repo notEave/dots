@@ -1,0 +1,7 @@
+toolbar[type="menubar"] {
+	padding:0!important;
+}
+
+#navigator-toolbox::after {
+  display:none!important;
+}

@@ -1,0 +1,84 @@
+window#main-window toolbox#navigator-toolbox {
+	background-color:#eff0f1!important;
+}
+#main-window[lwthemetextcolor="dark"] #TabsToolbar {
+	background-color:#eff0f1!important;
+}
+#main-window[lwthemetextcolor="bright"] #TabsToolbar {
+	background-color:#31373b!important;
+}
+
+#main-window[lwthemetextcolor="dark"] #nav-bar {
+  background-color:transparent!important;
+}
+
+#main-window[lwthemetextcolor="bright"] #nav-bar {
+	background-color:#31373b!important;
+}
+
+#main-window[lwthemetextcolor="bright"] #urlbar {
+	background-color:rgba(255, 255, 255, 0.07)!important;
+}
+
+#main-window[lwthemetextcolor="dark"] #PersonalToolbar {
+	background-color:!important;
+}
+
+#main-window[lwthemetextcolor="bright"] #navigator-toolbox {
+	--tabs-border-color:rgba(255,255,255, 0.2)!important;
+	border-bottom: 1px solid #515B62!important;
+}
+
+#main-window[lwthemetextcolor="dark"] #navigator-toolbox {
+	--tabs-border-color:rgba(0,0,0, 0.2)!important;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2)!important;
+}
+
+/*
+#PersonalToolbar {
+	background-color:transparent!important;
+	-moz-box-ordinal-group: 2;
+}
+*/
+
+
+#main-window[lwthemetextcolor="dark"] .tab-background[selected="true"] {
+	background-attachment: none!important;
+	background-color:#fff!important;
+	background-image:none!important;
+}
+
+#main-window[lwthemetextcolor="bright"] .tab-background[selected="true"] {
+	background-attachment: none!important;
+	background-color:rgba(255,255,255, 0.07)!important;
+	background-image:none!important;
+}
+
+#TabsToolbar .tabbrowser-tab[fadein]:not([pinned]) {
+  flex-grow: 1!important;
+  min-width: 11em!important;
+  max-width: 100%!important;
+}
+
+:root[uidensity=compact] #urlbar,
+:root[uidensity=compact] .searchbar-textbox {
+  font-size: unset !important;
+  min-height: 22px !important;
+}
+
+:root[uidensity=compact] #identity-box {
+  max-height: 20px;
+}
+
+:root[uidensity=compact] #nav-bar .toolbarbutton-1 {
+  padding: 0px !important;
+}
+
+.tab-label {
+	margin-top:-3px!important;
+	-moz-box-flex:1!important;
+	text-align:center!important;
+}
+
+
+

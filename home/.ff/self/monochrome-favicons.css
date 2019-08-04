@@ -1,0 +1,9 @@
+#main-window[lwthemetextcolor="dark"] tab .tab-icon,
+#main-window[lwthemetextcolor="dark"] .tab-icon-image {
+  filter: grayscale(1) brightness(1) contrast(1);
+}
+
+#main-window[lwthemetextcolor="bright"] tab .tab-icon,
+#main-window[lwthemetextcolor="bright"] .tab-icon-image {
+  filter: grayscale(1) brightness(1) contrast(1) invert(1);
+}

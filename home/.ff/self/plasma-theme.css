@@ -1,0 +1,55 @@
+:root {
+  --light-bg:hsl(210, 7%, 94%);
+  --light-hl:hsla(210, 7%, 100%, 0.8);
+  --light-border:hsla(210, 14%, 75%, 1);
+  --dark-bg:hsl(204, 9%, 21%);
+  --dark-hl:hsla(204, 9%, 42%, 0.3);
+  --dark-border:hsla(204, 5%, 36%, 1);
+}
+
+
+#main-window[lwthemetextcolor="dark"] toolbox#navigator-toolbox {
+    background-color:var(--light-bg)!important;
+}
+
+#main-window[lwthemetextcolor="bright"] toolbox#navigator-toolbox {
+  background-color:var(--dark-bg)!important;
+}
+
+#main-window #TabsToolbar {
+  background-color:transparent!important;
+}
+
+#nav-bar {
+  background-color:transparent!important;
+}
+
+#main-window[lwthemetextcolor="dark"] #urlbar {
+  background-color:var(--light-hl)!important;
+}
+
+#main-window[lwthemetextcolor="bright"] #urlbar {
+  background-color:var(--dark-hl)!important;
+}
+
+#main-window[lwthemetextcolor="dark"] #navigator-toolbox {
+  --tabs-border-color:var(--light-border)!important;
+  border-bottom: 1px solid var(--light-border)!important;
+}
+
+#main-window[lwthemetextcolor="bright"] #navigator-toolbox {
+  --tabs-border-color:var(--dark-border)!important;
+  border-bottom: 1px solid var(--dark-border)!important;
+}
+
+#main-window[lwthemetextcolor="dark"] .tab-background[selected="true"] {
+  backgound-attachment:none!important;
+  background-color:var(--light-hl)!important;
+  background-image:none!important;
+}
+
+#main-window[lwthemetextcolor="bright"] .tab-background[selected="true"] {
+  backgound-attachment:none!important;
+  background-color:var(--dark-hl)!important;
+  background-image:none!important;
+}

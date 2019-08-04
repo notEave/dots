@@ -1,0 +1,5 @@
+@-moz-document url("chrome://browser/content/browser.xul") {
+    .urlbar-input-box {
+        text-align: center;
+    }
+}

@@ -1,0 +1,4 @@
+/* hide_tabs_with_one_tab adds unnecessary padding, remove it with this rule */
+:root[sizemode="maximized"] > #navigator-toolbox{
+	padding-top:0px !important;
+}
