@@ -19,6 +19,9 @@
         company-irony-c-headers
         irony-eldoc
         flycheck-irony
+        ;; Common Lisp
+        slime
+        slime-company
         ;; Better D
         ;;company-dcd
         ;;d-mode
@@ -68,7 +71,8 @@
       (move-text-default-bindings)))
 
 (defun package-config/flycheck ()
-  "Flycheck configuration."
+  "Flycheck configuration.
+Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
   (if (package-installed-p 'flycheck)
       (progn
         (global-flycheck-mode)
@@ -103,11 +107,16 @@
           '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
         (add-hook 'irony-mode-hook #'irony-eldoc))))
 
-(package-config/whitespace)
-(package-config/multiple-cursors)
-(package-config/move-text)
-(package-config/flycheck)
-(package-config/company)
+(defun package-config/slime ()
+  "Slime configuration."
+  (if (package-installed-p 'slime)
+      (progn
+        (defvar inferior-lisp-program)
+        (setq inferior-lisp-program "/bin/sbcl")
+        (defvar slime-contribs)
+        (setq slime-contribs '(slime-fancy))
+        (if (package-installed-p 'slime-company)
+            (add-to-list 'slime-contribs 'slime-company t)))))
 
 (add-hook 'after-init-hook
           (lambda ()
@@ -115,7 +124,8 @@
             (package-config/multiple-cursors)
             (package-config/move-text)
             (package-config/flycheck)
-            (package-config/company)))
+            (package-config/company)
+            (package-config/slime)))
 
 ;; Move emacs temporary and autosave files to a temporary directory
 (setq backup-directory-alist
