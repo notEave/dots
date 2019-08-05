@@ -1,5 +1,6 @@
 :root {
-  --light-bg:hsl(210, 7%, 94%);
+    /*--light-bg:hsl(210, 7%, 94%);*/
+  --light-bg:hsl(0, 0%, 96.1%);
   --light-hl:hsla(210, 7%, 100%, 0.8);
   --light-border:hsla(210, 14%, 75%, 1);
   --dark-bg:hsl(204, 9%, 21%);
