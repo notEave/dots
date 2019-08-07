@@ -44,7 +44,7 @@ function select_action {
 
 function select_package {
     echo 'Select package:'
-    select PKG in $(echo pkgs/* | xargs basename -a; echo QUIT)
+    select PKG in $(echo pkgs/* | xargs basename -a; printf 'ALL\nQUIT')
     do
         case "${PKG}"
         in
@@ -61,10 +61,25 @@ function select_package {
     echo
 }
 
+function act_all {
+    for PACK in $(echo pkgs/* | xargs basename -a)
+    do
+        stow -v -d pkgs -t ~ -"${MODE}" "${PACK}"
+    done
+}
+
+ 
 while 'true'
 do
     select_action
     select_package
-    stow -v -d pkgs -t ~ -"${MODE}" "${PKG}"
+    if [ "${PKG}" = 'ALL' ]
+    then
+        act_all
+    else
+        echo "${PKG}"
+        echo pkgs
+        stow -v -d pkgs -t ~ -"${MODE}" "${PKG}"
+    fi
     echo
 done
