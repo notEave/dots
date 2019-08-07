@@ -5,8 +5,8 @@
 #
 
 # Program dependency check
-command -v readlink || exit 1
-command -v stow || exit 1
+command -v readlink > /dev/null || exit 1
+command -v stow > /dev/null ||  exit 1
 
 # Exit if cd fails
 cd "$(readlink -f "$0" | xargs dirname)" || exit 1
