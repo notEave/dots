@@ -6,7 +6,7 @@
 [[ $- != *i* ]] && return
 
 # Source bash_aliases if they exist
-[ -f "$HOME/.bash_aliases" ] && source "$HOME/.bash_aliases"
+[ -f "$HOME/.bash_aliases" ] && . "$HOME/.bash_aliases"
 
 # Set shell options
 shopt -s dotglob
@@ -18,6 +18,10 @@ CLEAR='\[\033[00m\]'
 BLUE='\[\033[01;34m\]'
 export PS1="$GREEN"'\h'"$CLEAR"':'"$BLUE"'\W'"$CLEAR"' '"$GREEN"'\u'"$CLEAR"' $ '
 export PATH="$PATH:$HOME/Desktop/bin"
+
+# Unified bash history in tmux and other sessions
+export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+shopt -s histappend
 
 export VISUAL='emacsclient --tty'
 export EDITOR='emacsclient --tty'
