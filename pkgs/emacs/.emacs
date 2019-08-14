@@ -177,6 +177,13 @@ Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
 (global-set-key (kbd "C-c DEL") 'c-hungry-delete-backwards)
 (global-set-key (kbd "C-c <deletechar>") 'c-hungry-delete-forward)
 
+;; Recolor mode-line
+(defvar mode-line-colors t)
+(when mode-line-colors
+  (progn
+  (set-face-background 'mode-line "#FFFFFF")
+  (set-face-foreground 'mode-line "#000000")))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
