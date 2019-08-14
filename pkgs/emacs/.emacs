@@ -181,8 +181,8 @@ Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
 (defvar mode-line-colors t)
 (when mode-line-colors
   (progn
-  (set-face-background 'mode-line "#FFFFFF")
-  (set-face-foreground 'mode-line "#000000")))
+  (set-face-background 'mode-line "white")
+  (set-face-foreground 'mode-line "black")))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

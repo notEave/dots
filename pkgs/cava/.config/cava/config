@@ -115,8 +115,8 @@ channels = mono
 # not able to restore color definitions on exit, simply restart your terminal to restore colors.
 ; gradient = 1
 ; gradient_count = 2
-; gradient_color_1 = '#0099ff'
-; gradient_color_2 = '#ff3399'
+; gradient_color_1 = '#000000'
+; gradient_color_2 = '#FFFFFF'
 
 
 
