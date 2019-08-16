@@ -1,4 +1,4 @@
-;;; package --- emacs init file
+;; package --- emacs init file
 ;;; Commentary:
 ;;; Code:
 
@@ -148,7 +148,6 @@ Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
   (find-file "~/.emacs"))
 
 ;; Code entry and UI/UX
-(menu-bar-mode -1)
 (global-font-lock-mode 0)
 (defvar show-paren-delay)
 (setq show-paren-delay 0)
@@ -177,12 +176,27 @@ Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
 (global-set-key (kbd "C-c DEL") 'c-hungry-delete-backwards)
 (global-set-key (kbd "C-c <deletechar>") 'c-hungry-delete-forward)
 
-;; Recolor mode-line
-(defvar mode-line-colors t)
-(when mode-line-colors
-  (progn
-  (set-face-background 'mode-line "white")
-  (set-face-foreground 'mode-line "black")))
+;; Configuration for when emacs is ran under X or in a text terminal etc.
+(defun window-manager-config ()
+  "Config for running Emacs under a window manager."
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
+  (menu-bar-mode 1))
+
+(defun text-terminal-config ()
+  "Options for running Emacs under a text terminal."
+  (menu-bar-mode 0))
+
+(defun ui-config (&optional frame)
+  "GUI and TUI configuration.  FRAME is the frame passed in by 'add-hook'."
+  (interactive)
+  (if (display-graphic-p)
+      (window-manager-config)
+    (text-terminal-config)))
+
+(add-hook 'after-init-hook 'ui-config)
+(add-hook 'after-make-frame-functions 'ui-config)
+(add-hook 'server-switch-hook 'ui-config)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -197,7 +211,7 @@ Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:weight medium :foundry "APPL" :family "SF Mono")))))
 
 (provide '.emacs)
 ;;; .emacs ends here
