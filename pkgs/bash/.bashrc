@@ -1,4 +1,4 @@
-#
+
 # .bashrc
 #
 
@@ -20,7 +20,8 @@ export PS1="$GREEN"'\h'"$CLEAR"':'"$BLUE"'\W'"$CLEAR"' '"$GREEN"'\u'"$CLEAR"' $ 
 export PATH="$PATH:$HOME/Desktop/bin"
 
 # Unified bash history in tmux and other sessions
-export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+# export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export PROMPT_COMMAND='history -a;'
 shopt -s histappend
 
 export VISUAL='emacsclient --tty'
