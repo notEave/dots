@@ -2,346 +2,187 @@
 ;;; Commentary:
 ;;; Code:
 
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+;; TODO
+;; flx, smex, helm, ido
 
-;; package-enable-at-startup stops package-initalize from running
-;; twice for a faster startup
 (progn
+  (require 'package)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
-  (setq package-enable-at-startup nil))
+  (setq package-enable-at-startup nil)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package)))
 
-;; manually install the use-package package
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(use-package which-key
+(use-package auto-package-update
   :ensure t
   :init
-  (which-key-mode))
+  (setq auto-package-update-delete-old-versions t
+	auto-package-update-hide-results t)
+  :config
+  (auto-package-update-maybe))
 
 (use-package whitespace
   :ensure t
   :init
-  (setq whitespace-style '(face lines-tail))
-  (setq whitespace-line-column 79)
-  (global-whitespace-mode 1))
-
-(use-package move-text
-  :disabled
-  :ensure t
-  :init
-  (move-text-default-bindings))
-
+  (setq whitespace-style '(face lines-tail)
+	whitespace-line-column 79)
+  :config
+  (global-whitespace-mode 1)
+  :bind ("C-c t w s" . 'whitespace-mode))
+  
 (use-package guru-mode
   :ensure t
-  :init
-  (guru-global-mode))
+  :config
+  (guru-global-mode 1)
+  :bind ("C-c t g" . 'guru-global-mode))
+
+(use-package faces
+  :config
+  (set-face-attribute 'default nil :family "SF Mono" :weight 'bold))
 
 (use-package dracula-theme
   :ensure t
   :init
-  (load-theme 'dracula))
+  (defun set-dracula (&optional frame)
+    (if (display-graphic-p frame)
+        (load-theme 'dracula t)
+      (disable-theme 'dracula)))
+  :hook ((after-init . set-dracula)
+         (after-make-frame-functions . set-dracula)
+         (server-switch . set-dracula)))
 
 (use-package flycheck
   :ensure t
-  :defer t
   :init
-  (global-flycheck-mode)
-  (set-variable 'flycheck-idle-change-delay 0.5))
+  (setq flycheck-idle-change-delay 0.5)
+  :config
+  (global-flycheck-mode 1)
+  :bind
+  ("C-c t f" . 'flycheck-mode))
 
 (use-package company
   :ensure t
-  :defer t
   :init
-  (global-company-mode)
-  (set-variable 'company-idle-delay 0.5)
-  (set-variable 'company-minimum-prefix-length 2))
+  (setq company-idle-delay 0.5
+        company-minimum-prefix-length 2)
+  :config
+  (global-company-mode))
 
-(set-face-attribute 'default nil :family "SF Mono" :weight 'bold)
+(use-package files
+  :config
+  (setq backup-directory-alist
+	`((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+	`((".*" ,temporary-file-directory t))))
 
-;; Move emacs temporary and autosave files to a temporary directory
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(use-package paren
+  :init
+  (setq show-paren-delay 0.5)
+  :config
+  (show-paren-mode 1))
 
-;;(global-font-lock-mode 0)
-(setq show-paren-delay 0)
-(show-paren-mode t)
-(electric-pair-mode t)
-(delete-selection-mode t)
-(setq-default indent-tabs-mode nil)
-(setq-default c-default-style "linux")
-(setq-default c-basic-offset 4)
-(setq-default backward-delete-char-untabify-method 'hungry)
-(c-set-offset 'inline-open 0)
+(use-package elec-pair
+  :config
+  (electric-pair-mode 1)
+  :bind ("C-c t e p" . 'electric-pair-mode))
 
-(defun window-manager-config ()
-  "Config for running Emacs under a window manager."
-  (tool-bar-mode 0)
-  (scroll-bar-mode 0)
-  (menu-bar-mode 1)
-  (if (package-installed-p 'dracula-theme)
-      (load-theme 'dracula)))
+(use-package cc-vars
+  :config
+  (setq-default c-default-style "linux"
+		c-basic-offset 4))
 
-(defun text-terminal-config ()
-  "Options for running Emacs under a text terminal."
-  (menu-bar-mode 0)
-  (if (package-installed-p 'dracula-theme)
-      (disable-theme 'dracula))
-  (set-face-attribute 'mode-line nil :background "white")
-  (set-face-attribute 'mode-line nil :foreground "black"))
+(use-package cc-styles
+  :config
+  (c-set-offset 'inline-open 0))
+  
+(use-package simple
+  :config
+  (setq-default backward-delete-char-untabify-method 'hungry)
+  :bind ("C-c i" . overwrite-mode))
 
-(defun ui-config (&optional frame)
-  "GUI and TUI configuration.  FRAME is the frame passed in by 'add-hook'."
-  (interactive)
-  (if (display-graphic-p frame)
-      (window-manager-config)
-    (text-terminal-config)))
+(use-package display-line-numbers
+  :init
+  (setq display-line-numbers-type 'relative
+        display-line-numbers-current-absolute nil)
+  (global-display-line-numbers-mode 1)
+  :bind ("C-c t l n" . display-line-numbers-mode)
+  :hook (doc-view-mode . (lambda () (display-line-numbers-mode 0))))
 
-;; List of desired packages
-;;(defvar package-list)
-;;(setq package-list
-;;      '(
-;;        ;; Editing
-;;        whitespace
-;;        multiple-cursors
-;;        move-text
-;;
-;;        ;; Guru mode
-;;        guru-mode
-;;
-;;        ;; Syntax checker
-;;        flycheck
-;;
-;;        ;; Auto completion
-;;        company
-;;
-;;        ;; Better C
-;;        company-irony
-;;        company-irony-c-headers
-;;        irony-eldoc
-;;        flycheck-irony
-;;
-;;        ;; Common Lisp
-;;        slime
-;;        slime-company
-;;
-;;        ;; Helm
-;;        ;; helm
-;;
-;;        ;; Theme
-;;      dracula-theme
-;;
-;;        ;; Better D
-;;        ;;company-dcd
-;;        ;;d-mode
-;;        ;; Better Clojure
-;;        ;;clojure-mode
-;;        ;;clojure-mode-extra-font-locking
-;;        ;;cider
-;;        ;;rainbow-blocks
-;;        ;; Better typescript
-;;        ;;typescript-mode
-;;        ;;tide
-;;      ))
-;;
-;;;; Package initialization
-;;(package-initialize)
-;;;; Temporary fix for emacs bug
-;;(defvar package-archives)
-;;(setq package-archives '(("gnu" . "http://mirrors.163.com/elpa/gnu/")))
-;;(add-to-list 'package-archives
-;;             '("melpa" . "https://melpa.org/packages/") t)
-;;(defvar package-archive-contents)
-;;(unless package-archive-contents
-;;  (package-refresh-contents))
-;;(dolist (package package-list)
-;;  (unless (package-installed-p package)
-;;    (package-install package)))
-;;
-;;;; Package configuration
-;;(defun package-config/whitespace ()
-;;  "Whitespace configuration."
-;;  (if (package-installed-p 'whitespace)
-;;      (progn
-;;        (defvar whitespace-style)
-;;        (setq whitespace-style '(face lines-tail))
-;;        (defvar whitespace-line-column)
-;;        (setq whitespace-line-column 79)
-;;        (global-whitespace-mode 1))))
-;;
-;;(defun package-config/multiple-cursors ()
-;;  "Multiple Cursors configuration."
-;;  (if (package-installed-p 'multiple-cursors)
-;;      (global-set-key (kbd "C-c m c") 'mc/edit-lines)))
-;;
-;;(defun package-config/move-text ()
-;;  "Move Text configuration."
-;;  (if (package-installed-p 'move-text)
-;;      (move-text-default-bindings)))
-;;
-;;(defun package-config/guru-mode ()
-;;  "Guru mode configuration."
-;;  (if (package-installed-p 'guru-mode)
-;;      (guru-global-mode 1)))
-;;
-;;(defun package-config/flycheck ()
-;;  "Flycheck configuration.
-;;Checkers: https://www.flycheck.org/en/latest/languages.html?highlight=bash."
-;;  (if (package-installed-p 'flycheck)
-;;      (progn
-;;        (global-flycheck-mode)
-;;        (set-variable 'flycheck-idle-change-delay 0.5))))
-;;
-;;(defun package-config/company ()
-;;  "Company configuration."
-;;  (if (package-installed-p 'company)
-;;      (progn
-;;        (global-company-mode)
-;;        (set-variable 'company-idle-delay 0.5)
-;;        (set-variable 'company-minimum-prefix-length 2)
-;;        (global-set-key (kbd "C-c C-c") 'company-complete)))
-;;  (if (and
-;;       (package-installed-p 'company)
-;;       (package-installed-p 'company-irony)
-;;       (package-installed-p 'company-irony-c-headers)
-;;       (package-installed-p 'irony-eldoc)
-;;       (package-installed-p 'flycheck)
-;;       (package-installed-p 'flycheck-irony))
-;;      (progn
-;;        (add-hook 'c++-mode-hook 'irony-mode)
-;;        (add-hook 'c-mode-hook 'irony-mode)
-;;        (add-hook 'objc-mode-hook 'irony-mode)
-;;        (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-;;        (defvar company-backends)
-;;        (eval-after-load 'company
-;;          '(add-to-list
-;;            'company-backends
-;;            '(company-irony-c-headers company-irony)))
-;;        (eval-after-load 'flycheck
-;;          '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-;;        (add-hook 'irony-mode-hook #'irony-eldoc))))
-;;
-;;(defun package-config/slime ()
-;;  "Slime configuration."
-;;  (if (package-installed-p 'slime)
-;;      (progn
-;;        (defvar inferior-lisp-program)
-;;        (setq inferior-lisp-program "/bin/sbcl")
-;;        (defvar slime-contribs)
-;;        (setq slime-contribs '(slime-fancy))
-;;        (if (package-installed-p 'slime-company)
-;;            (add-to-list 'slime-contribs 'slime-company t)))))
-;;
-;;(add-hook 'after-init-hook
-;;          (lambda ()
-;;            (package-config/whitespace)
-;;            (package-config/multiple-cursors)
-;;            (package-config/move-text)
-;;            (package-config/flycheck)
-;;            (package-config/company)
-;;            (package-config/slime)))
-;;
-;;;; Move emacs temporary and autosave files to a temporary directory
-;;(setq backup-directory-alist
-;;      `((".*" . ,temporary-file-directory)))
-;;(setq auto-save-file-name-transforms
-;;      `((".*" ,temporary-file-directory t)))
-;;
-;;(defun smart-home ()
-;;  "Go to first non indent, then line start."
-;;  (interactive)
-;;  (let ((old (point)))
-;;    (handle-shift-selection)
-;;    (back-to-indentation)
-;;    (and (= old (point))
-;;         (beginning-of-line))))
-;;
-;;(defun open-init-file ()
-;;  "Open this init file."
-;;  (interactive)
-;;  (find-file "~/.emacs"))
-;;
-;;;; Code entry and UI/UX
-;;;;(global-font-lock-mode 0)
-;;(defvar show-paren-delay)
-;;(setq show-paren-delay 0)
-;;(show-paren-mode t)
-;;(column-number-mode 0)
-;;(electric-pair-mode t)
-;;(blink-cursor-mode 1)
-;;(delete-selection-mode t)
-;;(setq-default indent-tabs-mode nil)
-;;(setq-default c-default-style "linux")
-;;(setq-default c-basic-offset 4)
-;;(setq-default backward-delete-char-untabify-method 'hungry)
-;;(c-set-offset 'inline-open 0)
-;;
-;;;; Keybinding
-;;(if (fboundp 'smart-home)
-;;    (global-set-key (kbd "<home>") 'smart-home))
-;;;;(if (fboundp 'open-init-file)
-;;;;    (global-set-key (kbd "C-c C-f C-g") 'open-init-file))
-;;(global-set-key (kbd "C-k") 'kill-whole-line)
-;;;;(global-set-key (kbd "C-x c") 'compile)
-;;(global-set-key (kbd "C-x <C-up>") 'windmove-up)
-;;(global-set-key (kbd "C-x <C-left>") 'windmove-left)
-;;(global-set-key (kbd "C-x <C-down>") 'windmove-down)
-;;(global-set-key (kbd "C-x <C-right>") 'windmove-right)
-;;;;(global-set-key (kbd "M-o m") 'newline-and-indent)
-;;;;(global-set-key (kbd "C-c DEL") 'c-hungry-delete-backwards)
-;;;;(global-set-key (kbd "C-c <deletechar>") 'c-hungry-delete-forward)
-;;
-;;;; Configuration for when emacs is ran under X or in a text terminal etc.
-;;(defun window-manager-config ()
-;;  "Config for running Emacs under a window manager."
-;;  (tool-bar-mode 0)
-;;  (scroll-bar-mode 0)
-;;  (menu-bar-mode 1)
-;;  (if (package-installed-p 'dracula-theme)
-;;      (load-theme 'dracula)))
-;;
-;;(defun text-terminal-config ()
-;;  "Options for running Emacs under a text terminal."
-;;  (menu-bar-mode 0)
-;;  (if (package-installed-p 'dracula-theme)
-;;      (disable-theme 'dracula))
-;;  (set-face-attribute 'mode-line nil :background "white")
-;;  (set-face-attribute 'mode-line nil :foreground "black"))
-;;
-;;(defun ui-config (&optional frame)
-;;  "GUI and TUI configuration.  FRAME is the frame passed in by 'add-hook'."
-;;  (interactive)
-;;  (if (display-graphic-p frame)
-;;      (window-manager-config)
-;;    (text-terminal-config)))
-;;
-;;(add-hook 'after-init-hook 'ui-config)
-;;(add-hook 'after-make-frame-functions 'ui-config)
-;;(add-hook 'server-switch-hook 'ui-config)
-;;
-;;(custom-set-variables
-;; ;; custom-set-variables was added by Custom.
-;; ;; If you edit it by hand, you could mess it up, so be careful.
-;; ;; Your init file should contain only one such instance.
-;; ;; If there is more than one, they won't work right.
-;; '(custom-safe-themes
-;;   (quote
-;;    ("274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" default)))
-;; '(package-selected-packages
-;;   (quote
-;;    (flycheck-irony irony-eldoc company-irony-c-headers company-irony company flycheck move-text multiple-cursor
-;;s))))
-;;(custom-set-faces
-;; ;; custom-set-faces was added by Custom.
-;; ;; If you edit it by hand, you could mess it up, so be careful.
-;; ;; Your init file should contain only one such instance.
-;; ;; If there is more than one, they won't work right.
-;; '(default ((t (:weight bold :foundry "APPL" :family "SF Mono")))))
-;;
-;;(provide '.emacs)
+(use-package glasses
+  :init
+  (setq glasses-separate-parentheses-p nil)
+  :hook (java-mode . glasses-mode))
+
+(use-package doc-view
+  :init
+  (setq doc-view-resolution 300))
+
+(use-package tool-bar
+  :config
+  (tool-bar-mode 0))
+
+(use-package scroll-bar
+  :config
+  (scroll-bar-mode 0))
+
+(use-package menu-bar
+  :init
+  (defun set-menu-bar (&optional frame)
+    (if (display-graphic-p frame)
+        (menu-bar-mode 1)
+      (menu-bar-mode 0)))
+  :hook ((after-init . set-menu-bar)
+         (after-make-frame-functions . set-menu-bar)
+         (server-switch . set-menu-bar)))
+
+;; Defined in C source code.
+(setq-default indent-tabs-mode nil
+              truncate-lines 1)
+
+(progn
+  (defun switch-to-ansi-term ()
+    "Open a running 'ansi-term' buffer in other window if one exists.
+Otherwise start one."
+    (interactive)
+    (let ((ansi-term (get-buffer "*ansi-term*")))
+      (if ansi-term
+          (switch-to-buffer-other-window ansi-term)
+        (let ((ansi-term (ansi-term shell-file-name)))
+          (switch-to-buffer (other-buffer ansi-term t))
+          (switch-to-buffer-other-window ansi-term)))))
+  (global-set-key (kbd "C-c s a") 'switch-to-ansi-term))
+
+
+(progn
+  (defun mumble-or-n-p (prompt)
+    "Ask user a y or n question.
+Default answer is yes.
+PROMPT is the string to display to ask the question"
+    (if (string= "n"
+                 (downcase
+                  (read-from-minibuffer
+                   (concat prompt "(Y or n) "))))
+        nil
+      t))
+  (defalias 'yes-or-no-p 'mumble-or-n-p)
+  (defalias 'y-or-n-p 'mumble-or-n-p))
+
+(provide '.emacs)
 ;;; .emacs ends here
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (company use-package guru-mode flycheck dracula-theme auto-package-update))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
